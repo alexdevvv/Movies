@@ -1,8 +1,8 @@
 package com.example.movies.presentation.recycler_view
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -18,6 +18,15 @@ class MoviesAdapter : RecyclerView.Adapter<MovieViewHolder>() {
         return MovieViewHolder(view)
     }
 
+    var reachEndListListener: ReachEndListListener? = null
+    set(value) {
+        field = value
+    }
+
+    interface ReachEndListListener{
+        fun onRichEnd()
+    }
+
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = listMovies[position]
         Glide
@@ -30,12 +39,33 @@ class MoviesAdapter : RecyclerView.Adapter<MovieViewHolder>() {
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(holder.moviePoster)
 
+
+
+        val rating = movie.rating.kp.toString().toDouble()
+        val idRatingBackGround = initColorForBackgroundRating(rating)
+        val drawBackground = ContextCompat.getDrawable(holder.itemView.context, idRatingBackGround)
+        holder.movieRating.background = drawBackground
         holder.movieRating.text = movie.rating.kp.toString()
+
+        if (reachEndListListener != null && position == listMovies.size - 2){
+            reachEndListListener!!.onRichEnd()
+        }
+
 
     }
 
     override fun getItemCount(): Int {
         return listMovies.size
+    }
+
+    private fun initColorForBackgroundRating(rating: Double): Int {
+        return if (rating < 8) {
+            R.drawable.circle_red
+        } else if (rating < 8.5) {
+            R.drawable.circle_orange
+        } else {
+            R.drawable.circle_green
+        }
     }
 
     fun initListMovie(list: List<Movie>) {
