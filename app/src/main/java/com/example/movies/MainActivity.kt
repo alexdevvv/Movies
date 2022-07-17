@@ -14,8 +14,10 @@ import com.example.movies.presentation.recycler_view.MoviesAdapter
 
 class MainActivity : AppCompatActivity(), MoviesAdapter.ReachEndListListener {
     private lateinit var viewModel: MainViewModel
-    private lateinit var liveData: LiveData<MutableList<Movie>>
+    private lateinit var moviesLiveData: LiveData<MutableList<Movie>>
+    private lateinit var progressBarLiveData: LiveData<Boolean>
     private lateinit var progressBar: ProgressBar
+
     private lateinit var  myAdapter: MoviesAdapter
     private lateinit var rv: RecyclerView
 
@@ -25,12 +27,12 @@ class MainActivity : AppCompatActivity(), MoviesAdapter.ReachEndListListener {
         rv = findViewById(R.id.movies_rw)
         myAdapter = MoviesAdapter()
         rv.layoutManager = GridLayoutManager(this, 2)
-
         rv.adapter = myAdapter
         progressBar = findViewById(R.id.progress_bar)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        liveData = viewModel.getMovieLiveData()
+        moviesLiveData = viewModel.getMovieLiveData()
+        progressBarLiveData = viewModel.getProgressBarLiveData()
         bindLiveData()
 
         viewModel.getTopMovies()
@@ -38,9 +40,17 @@ class MainActivity : AppCompatActivity(), MoviesAdapter.ReachEndListListener {
     }
 
     private fun bindLiveData(){
-        liveData.observe(this){
+        moviesLiveData.observe(this){
             progressBar.visibility = View.INVISIBLE
             initRecyclerView(it)
+        }
+
+       progressBarLiveData.observe(this){isLoading ->
+            if (isLoading == true){
+                progressBar.visibility = (View.VISIBLE)
+            }else{
+                progressBar.visibility = (View.GONE)
+            }
         }
 
     }

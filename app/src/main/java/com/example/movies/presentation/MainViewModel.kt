@@ -20,6 +20,7 @@ class MainViewModel : ViewModel() {
     private val repository = MoviesRepositoryImpl(apiService = api)
     private val getTopMoviesUseCase = GetTopMoviesUseCase(repository)
     private val moviesLiveData = MutableLiveData<MutableList<Movie>>()
+    private val progressBarLiveData = MutableLiveData<Boolean>(false)
     private var page = 1
     var list = mutableListOf<Movie>()
 
@@ -27,20 +28,22 @@ class MainViewModel : ViewModel() {
         return moviesLiveData
     }
 
+    fun getProgressBarLiveData(): LiveData<Boolean>{
+        return progressBarLiveData
+    }
+
     fun getTopMovies() {
         disposable.addAll(
             getTopMoviesUseCase.loadMovies(page = page)
                 .subscribeOn(Schedulers.io()) //  Указываем в каком потоке получать данные
-                .observeOn(AndroidSchedulers.mainThread()) // Указываем что выводыить данные мы будем в основном програмном потоке
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    progressBarLiveData.value = true
+                }
+                .doAfterTerminate {
+                    progressBarLiveData.value = false
+                }// Указываем что выводыить данные мы будем в основном програмном потоке
                 .subscribe({movieResponse ->
-//                    val listMovies = moviesLiveData.value
-//                    if (listMovies != null){
-//                        listMovies.addAll(movieResponse.movies)
-//                        moviesLiveData.value = listMovies!!
-//                        Log.e("LiveData", (moviesLiveData.value?.size).toString())
-//                    }else{
-//                        moviesLiveData.value = movieResponse.movies as MutableList<Movie>
-//                    }
                     moviesLiveData.value?.let {
                         list.addAll(movieResponse.movies)
                         Log.e("XXX", list.size.toString())
@@ -49,14 +52,15 @@ class MainViewModel : ViewModel() {
                     if (moviesLiveData.value == null){
                         moviesLiveData.value = movieResponse.movies as MutableList<Movie>
                     }
+
                     page++
+                    Log.e("onBindViewHolder",  "${page}")
 
                 }, {
 
                 })
         )
     }
-
     override fun onCleared() {
         disposable.dispose()
         super.onCleared()

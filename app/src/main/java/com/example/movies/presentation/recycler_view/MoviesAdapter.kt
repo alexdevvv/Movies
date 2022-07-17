@@ -29,7 +29,7 @@ class MoviesAdapter : RecyclerView.Adapter<MovieViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        Log.e("onBindViewHolder", "1")
+
         val movie = listMovies[position]
         Glide
             .with(holder.itemView)
