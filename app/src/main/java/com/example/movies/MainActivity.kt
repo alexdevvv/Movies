@@ -46,8 +46,6 @@ class MainActivity : AppCompatActivity(), MoviesAdapter.ReachEndListListener {
     }
     
     private fun initRecyclerView(list: List<Movie>){
-
-
         myAdapter.reachEndListListener = this
         myAdapter.initListMovie(list)
     }
