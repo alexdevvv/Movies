@@ -1,5 +1,6 @@
 package com.example.movies.presentation.recycler_view
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -28,18 +29,16 @@ class MoviesAdapter : RecyclerView.Adapter<MovieViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+        Log.e("onBindViewHolder", "1")
         val movie = listMovies[position]
         Glide
             .with(holder.itemView)
             .load(movie.poster.url)
             .apply(
                 RequestOptions()
-                    .placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher_round)
             )
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(holder.moviePoster)
-
-
 
         val rating = movie.rating.kp.toString().toDouble()
         val idRatingBackGround = initColorForBackgroundRating(rating)
@@ -47,11 +46,9 @@ class MoviesAdapter : RecyclerView.Adapter<MovieViewHolder>() {
         holder.movieRating.background = drawBackground
         holder.movieRating.text = movie.rating.kp.toString()
 
-        if (reachEndListListener != null && position == listMovies.size - 2){
+        if (reachEndListListener != null && position == listMovies.size - 10){
             reachEndListListener!!.onRichEnd()
         }
-
-
     }
 
     override fun getItemCount(): Int {
@@ -71,5 +68,6 @@ class MoviesAdapter : RecyclerView.Adapter<MovieViewHolder>() {
     fun initListMovie(list: List<Movie>) {
         this.listMovies = list
         notifyDataSetChanged()
+
     }
 }
