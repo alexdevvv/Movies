@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity(), MoviesAdapter.ReachEndListListener {
             progressBar.visibility = View.INVISIBLE
             initRecyclerView(it)
         }
+
     }
     
     private fun initRecyclerView(list: List<Movie>){
