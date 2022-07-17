@@ -1,13 +1,9 @@
 package com.example.movies
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,15 +16,23 @@ class MainActivity : AppCompatActivity(), MoviesAdapter.ReachEndListListener {
     private lateinit var viewModel: MainViewModel
     private lateinit var liveData: LiveData<MutableList<Movie>>
     private lateinit var progressBar: ProgressBar
+    private lateinit var  myAdapter: MoviesAdapter
+    private lateinit var rv: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        rv = findViewById(R.id.movies_rw)
+        myAdapter = MoviesAdapter()
+        rv.layoutManager = GridLayoutManager(this, 2)
+
+        rv.adapter = myAdapter
         progressBar = findViewById(R.id.progress_bar)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         liveData = viewModel.getMovieLiveData()
         bindLiveData()
+
         viewModel.getTopMovies()
 
     }
@@ -37,22 +41,17 @@ class MainActivity : AppCompatActivity(), MoviesAdapter.ReachEndListListener {
         liveData.observe(this){
             progressBar.visibility = View.INVISIBLE
             initRecyclerView(it)
-
         }
     }
     
     private fun initRecyclerView(list: List<Movie>){
-        val rv = findViewById<RecyclerView>(R.id.movies_rw)
-        val adapter = MoviesAdapter()
-        adapter.reachEndListListener = this
-        rv.adapter = adapter
-        rv.layoutManager = GridLayoutManager(this, 2)
-        adapter.initListMovie(list)
 
+
+        myAdapter.reachEndListListener = this
+        myAdapter.initListMovie(list)
     }
 
     override fun onRichEnd() {
         viewModel.getTopMovies()
-        Toast.makeText(this, "Конец списка", Toast.LENGTH_LONG).show()
     }
 }

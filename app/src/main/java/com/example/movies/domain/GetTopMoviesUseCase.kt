@@ -6,7 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 class GetTopMoviesUseCase(private val repository: MoviesRepository) {
-    fun getTopMovie(page: Int): Single<MovieResponse> =
+    fun loadMovies(page: Int): Single<MovieResponse> =
         repository.getTopMovie(page)
 
 }
