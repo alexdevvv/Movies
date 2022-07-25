@@ -1,22 +1,28 @@
 package com.example.movies
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.domain.models.Movie
+import com.example.movies.presentation.DetailMovieActivity
 import com.example.movies.presentation.MainViewModel
 import com.example.movies.presentation.recycler_view.MoviesAdapter
+import java.io.Serializable
 
-class MainActivity : AppCompatActivity(), MoviesAdapter.ReachEndListListener {
+class MainActivity : AppCompatActivity(),
+    MoviesAdapter.ReachEndListListener,
+    MoviesAdapter.OnMovieCkickListener {
     private lateinit var viewModel: MainViewModel
     private lateinit var liveData: LiveData<MutableList<Movie>>
     private lateinit var progressBar: ProgressBar
-    private lateinit var  myAdapter: MoviesAdapter
+    private lateinit var myAdapter: MoviesAdapter
     private lateinit var rv: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,22 +43,27 @@ class MainActivity : AppCompatActivity(), MoviesAdapter.ReachEndListListener {
 
     }
 
-    private fun bindLiveData(){
-        liveData.observe(this){
+    private fun bindLiveData() {
+        liveData.observe(this) {
             progressBar.visibility = View.INVISIBLE
             initRecyclerView(it)
         }
-
     }
-    
-    private fun initRecyclerView(list: List<Movie>){
 
-
+    private fun initRecyclerView(list: List<Movie>) {
         myAdapter.reachEndListListener = this
+        myAdapter.onMovieCkickListener = this
         myAdapter.initListMovie(list)
     }
 
     override fun onRichEnd() {
         viewModel.getTopMovies()
     }
+
+    override fun onMovieClick(movie: Movie) {
+        val intent = Intent(this, DetailMovieActivity::class.java)
+        intent.putExtra(DetailMovieActivity.MOVIE_KEY, movie as Serializable)
+        startActivity(intent)
+    }
+
 }

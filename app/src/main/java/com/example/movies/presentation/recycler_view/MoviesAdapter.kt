@@ -14,18 +14,27 @@ import com.example.movies.domain.models.Movie
 class MoviesAdapter : RecyclerView.Adapter<MovieViewHolder>() {
     private var listMovies = listOf<Movie>()
 
+    interface ReachEndListListener {
+        fun onRichEnd()
+    }
+
+    interface OnMovieCkickListener {
+        fun onMovieClick(movie: Movie)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.movie_item, parent, false)
         return MovieViewHolder(view)
     }
 
     var reachEndListListener: ReachEndListListener? = null
-    set(value) {
-        field = value
-    }
+        set(value) {
+            field = value
+        }
 
-    interface ReachEndListListener{
-        fun onRichEnd()
+    var onMovieCkickListener: OnMovieCkickListener? = null
+    set(value){
+        field = value
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
@@ -46,9 +55,14 @@ class MoviesAdapter : RecyclerView.Adapter<MovieViewHolder>() {
         holder.movieRating.background = drawBackground
         holder.movieRating.text = movie.rating.kp.toString()
 
-        if (reachEndListListener != null && position == listMovies.size - 10){
+        if (reachEndListListener != null && position == listMovies.size - 10) {
             reachEndListListener!!.onRichEnd()
         }
+
+        holder.itemView.setOnClickListener{
+            onMovieCkickListener?.onMovieClick(movie)
+        }
+
     }
 
     override fun getItemCount(): Int {
