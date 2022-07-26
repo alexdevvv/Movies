@@ -1,16 +1,19 @@
 package com.example.movies.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.movies.R
 import com.example.movies.domain.models.Movie
+import com.example.movies.domain.models.Trailer
+import com.example.movies.presentation.recyclers_view.TrailersAdapter
 
 class DetailMovieActivity : AppCompatActivity() {
     private lateinit var filmPoster: ImageView
@@ -18,16 +21,39 @@ class DetailMovieActivity : AppCompatActivity() {
     private lateinit var filmYear: TextView
     private lateinit var filmDescription: TextView
     private lateinit var detailViewModel: DetailViewModel
+    private lateinit var rv: RecyclerView
+    private lateinit var trailersAdapter: TrailersAdapter
 
+    companion object{
+        const val MOVIE_KEY = "movie"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_movie)
         detailViewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
-        detailViewModel.getTrailerForMovie()
         initViews()
         bindLiveData()
+        initDataFilm()
+
+    }
+
+    private fun bindLiveData(){
+        detailViewModel.getTrailerLiveData().observe(this
+        ) {
+            initRecyclerView(it)
+        }
+    }
+
+    private fun getMovieIntent(): Movie{
+        val intent = intent
+        val movie = intent.extras?.getSerializable(MOVIE_KEY)
+        return movie as Movie
+    }
+
+    private fun initDataFilm(){
         val movie = getMovieIntent()
+        detailViewModel.getTrailerForMovie(movie.id)
         filmName.text = movie.name
         filmYear.text = movie.year.toString()
         filmDescription.text = movie.description
@@ -42,21 +68,12 @@ class DetailMovieActivity : AppCompatActivity() {
             .into(filmPoster)
     }
 
-    private fun bindLiveData(){
-        detailViewModel.getTrailerLiveData().observe(this
-        ) {
-            Log.e("YYYY", it.toString())
-        }
-    }
-
-    companion object{
-        const val MOVIE_KEY = "movie"
-    }
-
-    private fun getMovieIntent(): Movie{
-        val intent = intent
-        val movie = intent.extras?.getSerializable(MOVIE_KEY)
-        return movie as Movie
+    private fun initRecyclerView(listTrailers: List<Trailer>){
+        rv = findViewById(R.id.trailers_rv)
+        trailersAdapter = TrailersAdapter()
+        rv.adapter = trailersAdapter
+        rv.layoutManager = LinearLayoutManager(this)
+        trailersAdapter.initListTrailer(listTrailers)
     }
 
     private fun initViews(){

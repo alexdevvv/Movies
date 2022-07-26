@@ -8,11 +8,9 @@ import com.example.movies.data.MoviesRepositoryImpl
 import com.example.movies.data.RetrofitHelper
 import com.example.movies.domain.GetTrailerForMovieUseCase
 import com.example.movies.domain.models.Trailer
-import com.example.movies.domain.models.TrailerResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.functions.Function
 
 class DetailViewModel : ViewModel() {
 
@@ -25,9 +23,9 @@ class DetailViewModel : ViewModel() {
 
     fun getTrailerLiveData(): LiveData<List<Trailer>> = trailerLiveData
 
-    fun getTrailerForMovie() {
+    fun getTrailerForMovie(filmId: Int) {
         disposable.add(
-            getTrailerForMovieUseCase.getTrailerForMovie(326)
+            getTrailerForMovieUseCase.getTrailerForMovie(id = filmId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { t -> t.listTrailers.traillers }
