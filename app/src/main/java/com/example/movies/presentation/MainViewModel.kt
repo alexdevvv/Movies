@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.movies.data.MoviesRepositoryImpl
 import com.example.movies.data.RetrofitHelper
 import com.example.movies.domain.GetTopMoviesUseCase
+import com.example.movies.domain.GetTrailerForMovieUseCase
 import com.example.movies.domain.models.Movie
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -33,14 +34,6 @@ class MainViewModel : ViewModel() {
                 .subscribeOn(Schedulers.io()) //  Указываем в каком потоке получать данные
                 .observeOn(AndroidSchedulers.mainThread()) // Указываем что выводыить данные мы будем в основном програмном потоке
                 .subscribe({movieResponse ->
-//                    val listMovies = moviesLiveData.value
-//                    if (listMovies != null){
-//                        listMovies.addAll(movieResponse.movies)
-//                        moviesLiveData.value = listMovies!!
-//                        Log.e("LiveData", (moviesLiveData.value?.size).toString())
-//                    }else{
-//                        moviesLiveData.value = movieResponse.movies as MutableList<Movie>
-//                    }
                     moviesLiveData.value?.let {
                         list.addAll(movieResponse.movies)
                         Log.e("XXX", list.size.toString())
@@ -56,6 +49,7 @@ class MainViewModel : ViewModel() {
                 })
         )
     }
+
 
     override fun onCleared() {
         disposable.dispose()
