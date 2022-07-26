@@ -1,19 +1,17 @@
-package com.example.movies
+package com.example.movies.presentation
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.movies.R
 import com.example.movies.domain.models.Movie
-import com.example.movies.presentation.DetailMovieActivity
-import com.example.movies.presentation.MainViewModel
-import com.example.movies.presentation.recycler_view.MoviesAdapter
+import com.example.movies.presentation.recyclers_view.MoviesAdapter
 import java.io.Serializable
 
 class MainActivity : AppCompatActivity(),
