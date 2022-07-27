@@ -14,7 +14,9 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.movies.R
 import com.example.movies.domain.models.Movie
+import com.example.movies.domain.models.Review
 import com.example.movies.domain.models.Trailer
+import com.example.movies.presentation.recyclers_view.ReviewsAdapter
 import com.example.movies.presentation.recyclers_view.TrailersAdapter
 
 class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerListener {
@@ -23,10 +25,12 @@ class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerL
     private lateinit var filmYear: TextView
     private lateinit var filmDescription: TextView
     private lateinit var detailViewModel: DetailViewModel
-    private lateinit var rv: RecyclerView
+    private lateinit var rvTrilers: RecyclerView
+    private lateinit var rvReviews: RecyclerView
     private lateinit var trailersAdapter: TrailersAdapter
+    private lateinit var rewiewsAdapter: ReviewsAdapter
 
-    companion object{
+    companion object {
         const val MOVIE_KEY = "movie"
     }
 
@@ -37,23 +41,29 @@ class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerL
         initViews()
         bindLiveData()
         initDataFilm()
-
     }
 
-    private fun bindLiveData(){
-        detailViewModel.getTrailerLiveData().observe(this
+    private fun bindLiveData() {
+        detailViewModel.getTrailerLiveData().observe(
+            this
         ) {
-            initRecyclerView(it)
+            initTrailersRecyclerView(it)
+        }
+
+        detailViewModel.getReviewsLiveData().observe(
+            this
+        ) {
+            initReviewsRecyclerView(it)
         }
     }
 
-    private fun getMovieIntent(): Movie{
+    private fun getMovieIntent(): Movie {
         val intent = intent
         val movie = intent.extras?.getSerializable(MOVIE_KEY)
         return movie as Movie
     }
 
-    private fun initDataFilm(){
+    private fun initDataFilm() {
         val movie = getMovieIntent()
         detailViewModel.getTrailerForMovie(movie.id)
         filmName.text = movie.name
@@ -68,19 +78,30 @@ class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerL
             )
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(filmPoster)
+
+        detailViewModel.getReviewsById(movie.id)
+
     }
 
-    private fun initRecyclerView(listTrailers: List<Trailer>){
-        rv = findViewById(R.id.trailers_rv)
+    private fun initTrailersRecyclerView(listTrailers: List<Trailer>) {
+        rvTrilers = findViewById(R.id.trailers_rv)
         trailersAdapter = TrailersAdapter()
-        rv.adapter = trailersAdapter
-        rv.layoutManager = LinearLayoutManager(this)
+        rvTrilers.adapter = trailersAdapter
+        rvTrilers.layoutManager = LinearLayoutManager(this)
         trailersAdapter.initListTrailer(listTrailers)
         trailersAdapter.onClickTreilerListener = this
 
     }
 
-    private fun initViews(){
+    private fun initReviewsRecyclerView(listReviews: List<Review>) {
+        rvReviews = findViewById(R.id.reviews_rv)
+        rewiewsAdapter = ReviewsAdapter()
+        rvReviews.adapter = rewiewsAdapter
+        rvReviews.layoutManager = LinearLayoutManager(this)
+        rewiewsAdapter.initListReview(listReviews)
+    }
+
+    private fun initViews() {
         filmPoster = findViewById(R.id.detail_movie_poster_iv)
         filmName = findViewById(R.id.film_name_tv)
         filmYear = findViewById(R.id.film_year_tv)
@@ -92,7 +113,6 @@ class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerL
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(trailer.url)
         startActivity(intent)
-
     }
 
 }

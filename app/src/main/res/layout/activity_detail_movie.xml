@@ -68,6 +68,14 @@
             app:layout_constraintTop_toBottomOf="@+id/trailers_rv"
             tools:text="film description" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reviews_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/film_description_tv" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

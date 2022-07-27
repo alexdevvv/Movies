@@ -1,6 +1,7 @@
 package com.example.movies.data
 
 import com.example.movies.domain.models.MovieResponse
+import com.example.movies.domain.models.ReviewsResponse
 import com.example.movies.domain.models.TrailerResponse
 import io.reactivex.Single
 import retrofit2.http.GET
@@ -13,4 +14,7 @@ interface ApiService {
 
     @GET("/movie?token=VSDXK3E-6614SGM-K3PVWSA-JBEF9HJ&field=id")
     fun getTrailerForMovie(@Query("search") id: Int): Single<TrailerResponse>
+
+    @GET("/review?token=ZQQ8GMN-TN54SGK-NB3MKEC-ZKB8V06&field=movieId")
+    fun getReviewById(@Query("search") id: Int): Single<ReviewsResponse>
 }

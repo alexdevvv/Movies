@@ -8,10 +8,17 @@
         <entry key="app/src/main/res/drawable/circle_green.xml" value="0.1715" />
         <entry key="app/src/main/res/drawable/circle_orange.xml" value="0.1715" />
         <entry key="app/src/main/res/drawable/circle_red.xml" value="0.1715" />
+        <entry key="app/src/main/res/drawable/square_negative_ewview.xml" value="0.104" />
+        <entry key="app/src/main/res/drawable/square_neutral_review.xml" value="0.104" />
+        <entry key="app/src/main/res/drawable/square_positive_review.xml" value="0.104" />
         <entry key="app/src/main/res/layout/activity_detail_movie.xml" value="0.3031661987304688" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.196875" />
         <entry key="app/src/main/res/layout/movie_item.xml" value="0.188018798828125" />
-        <entry key="app/src/main/res/layout/trailer_item.xml" value="0.3440658569335938" />
+        <entry key="app/src/main/res/layout/negative_review_item.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/neutral_review_item.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/positive_review_item.xml" value="0.28038482666015624" />
+        <entry key="app/src/main/res/layout/review_item.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/trailer_item.xml" value="0.1" />
       </map>
     </option>
   </component>

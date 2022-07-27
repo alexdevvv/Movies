@@ -1,7 +1,8 @@
 package com.example.movies.data
 
 import com.example.movies.domain.models.MovieResponse
-import com.example.movies.domain.models.MoviesRepository
+import com.example.movies.domain.MoviesRepository
+import com.example.movies.domain.models.ReviewsResponse
 import com.example.movies.domain.models.TrailerResponse
 import io.reactivex.Single
 
@@ -12,5 +13,8 @@ class MoviesRepositoryImpl(val apiService: ApiService): MoviesRepository {
 
     override fun getTrailerForMovie(id: Int): Single<TrailerResponse> =
         apiService.getTrailerForMovie(id)
+
+    override fun getReviews(filmId: Int): Single<ReviewsResponse> =
+        apiService.getReviewById(id = filmId)
 
 }

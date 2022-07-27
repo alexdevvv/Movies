@@ -1,6 +1,5 @@
 package com.example.movies.domain
 
-import com.example.movies.domain.models.MoviesRepository
 import com.example.movies.domain.models.TrailerResponse
 import io.reactivex.Single
 

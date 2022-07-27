@@ -15,7 +15,6 @@ class TrailersAdapter : RecyclerView.Adapter<TrailerViewHolder>() {
         field = value
     }
 
-
     interface OnClickTrailerListener {
         fun onClickTrailer(trailer: Trailer)
     }
