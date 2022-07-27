@@ -1,5 +1,7 @@
 package com.example.movies.presentation
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,7 +17,7 @@ import com.example.movies.domain.models.Movie
 import com.example.movies.domain.models.Trailer
 import com.example.movies.presentation.recyclers_view.TrailersAdapter
 
-class DetailMovieActivity : AppCompatActivity() {
+class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerListener {
     private lateinit var filmPoster: ImageView
     private lateinit var filmName: TextView
     private lateinit var filmYear: TextView
@@ -74,6 +76,8 @@ class DetailMovieActivity : AppCompatActivity() {
         rv.adapter = trailersAdapter
         rv.layoutManager = LinearLayoutManager(this)
         trailersAdapter.initListTrailer(listTrailers)
+        trailersAdapter.onClickTreilerListener = this
+
     }
 
     private fun initViews(){
@@ -81,6 +85,14 @@ class DetailMovieActivity : AppCompatActivity() {
         filmName = findViewById(R.id.film_name_tv)
         filmYear = findViewById(R.id.film_year_tv)
         filmDescription = findViewById(R.id.film_description_tv)
+
+    }
+
+    override fun onClickTrailer(trailer: Trailer) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(trailer.url)
+        startActivity(intent)
+
     }
 
 }
