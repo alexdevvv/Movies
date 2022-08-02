@@ -13,11 +13,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.movies.R
+import com.example.movies.data.db.MovieDatabase
 import com.example.movies.domain.models.Movie
 import com.example.movies.domain.models.Review
 import com.example.movies.domain.models.Trailer
 import com.example.movies.presentation.recyclers_view.ReviewsAdapter
 import com.example.movies.presentation.recyclers_view.TrailersAdapter
+import io.reactivex.schedulers.Schedulers
+
 
 class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerListener {
     private lateinit var filmPoster: ImageView
@@ -41,6 +44,8 @@ class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerL
         initViews()
         bindLiveData()
         initDataFilm()
+
+
     }
 
     private fun bindLiveData() {
@@ -80,6 +85,12 @@ class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerL
             .into(filmPoster)
 
         detailViewModel.getReviewsById(movie.id)
+
+        val db = MovieDatabase.getDbInstance(this).getMoviedao()
+        db.insertMovie(movie)
+            .subscribeOn(Schedulers.io())
+            .subscribe();
+
 
     }
 
