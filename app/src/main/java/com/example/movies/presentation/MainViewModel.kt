@@ -4,10 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.movies.data.MoviesRepositoryImpl
-import com.example.movies.data.RetrofitHelper
-import com.example.movies.domain.GetTopMoviesUseCase
-import com.example.movies.domain.GetTrailerForMovieUseCase
+import com.example.movies.data.network.NetworkRepositoryImpl
+import com.example.movies.data.network.RetrofitHelper
+import com.example.movies.domain.GetTopMoviesFromServerUseCase
 import com.example.movies.domain.models.Movie
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -18,8 +17,8 @@ class MainViewModel : ViewModel() {
 
     private var disposable = CompositeDisposable()
     private val api = RetrofitHelper.apiService
-    private val repository = MoviesRepositoryImpl(apiService = api)
-    private val getTopMoviesUseCase = GetTopMoviesUseCase(repository)
+    private val repository = NetworkRepositoryImpl(apiService = api)
+    private val getTopMoviesUseCase = GetTopMoviesFromServerUseCase(repository)
     private val moviesLiveData = MutableLiveData<MutableList<Movie>>()
     private var page = 1
     var list = mutableListOf<Movie>()

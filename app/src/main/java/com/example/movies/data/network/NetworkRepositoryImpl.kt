@@ -1,12 +1,12 @@
-package com.example.movies.data
+package com.example.movies.data.network
 
 import com.example.movies.domain.models.MovieResponse
-import com.example.movies.domain.MoviesRepository
+import com.example.movies.domain.NetworkRepository
 import com.example.movies.domain.models.ReviewsResponse
 import com.example.movies.domain.models.TrailerResponse
 import io.reactivex.Single
 
-class MoviesRepositoryImpl(val apiService: ApiService): MoviesRepository {
+class NetworkRepositoryImpl(val apiService: ApiService): NetworkRepository {
 
     override fun getTopMovie(page: Int): Single<MovieResponse> =
         apiService.getTopMovies(page)

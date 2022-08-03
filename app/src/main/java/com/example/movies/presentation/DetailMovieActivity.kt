@@ -1,11 +1,14 @@
 package com.example.movies.presentation
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,17 +16,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.movies.R
-import com.example.movies.data.db.MovieDatabase
 import com.example.movies.domain.models.Movie
 import com.example.movies.domain.models.Review
 import com.example.movies.domain.models.Trailer
 import com.example.movies.presentation.recyclers_view.ReviewsAdapter
 import com.example.movies.presentation.recyclers_view.TrailersAdapter
-import io.reactivex.schedulers.Schedulers
 
 
 class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerListener {
     private lateinit var filmPoster: ImageView
+    private lateinit var starView: ImageView
     private lateinit var filmName: TextView
     private lateinit var filmYear: TextView
     private lateinit var filmDescription: TextView
@@ -32,6 +34,8 @@ class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerL
     private lateinit var rvReviews: RecyclerView
     private lateinit var trailersAdapter: TrailersAdapter
     private lateinit var rewiewsAdapter: ReviewsAdapter
+    private lateinit var starOff: Drawable
+    private lateinit var starOn: Drawable
 
     companion object {
         const val MOVIE_KEY = "movie"
@@ -41,10 +45,12 @@ class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_movie)
         detailViewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+        starOff = ContextCompat.getDrawable(this, android.R.drawable.star_big_off)!!
+        starOn = ContextCompat.getDrawable(this, android.R.drawable.star_big_on)!!
+
         initViews()
         bindLiveData()
         initDataFilm()
-
 
     }
 
@@ -59,6 +65,12 @@ class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerL
             this
         ) {
             initReviewsRecyclerView(it)
+        }
+
+        detailViewModel.getIsSuccesInserDbLivedata().observe(
+            this
+        ) {
+            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -86,10 +98,21 @@ class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerL
 
         detailViewModel.getReviewsById(movie.id)
 
-        val db = MovieDatabase.getDbInstance(this).getMoviedao()
-        db.insertMovie(movie)
-            .subscribeOn(Schedulers.io())
-            .subscribe();
+        detailViewModel.getMovieFromDbById(movie.id)
+            .observe(this) {
+                if (it != null) {
+                    starView.setImageDrawable(starOn)
+                    starView.setOnClickListener {
+                        detailViewModel.deleteMovie(movie.id)
+                    }
+                } else {
+                    starView.setImageDrawable(starOff)
+                    starView.setOnClickListener {
+                        detailViewModel.insertMovieInDb(movie)
+                    }
+                }
+
+            }
 
 
     }
@@ -117,6 +140,7 @@ class DetailMovieActivity : AppCompatActivity(), TrailersAdapter.OnClickTrailerL
         filmName = findViewById(R.id.film_name_tv)
         filmYear = findViewById(R.id.film_year_tv)
         filmDescription = findViewById(R.id.film_description_tv)
+        starView = findViewById(R.id.star_iv)
 
     }
 
